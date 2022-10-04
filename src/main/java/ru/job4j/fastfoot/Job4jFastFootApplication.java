@@ -1,4 +1,4 @@
-package ru.job4j.job4j_fast_foot;
+package ru.job4j.fastfoot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

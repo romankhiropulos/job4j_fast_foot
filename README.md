@@ -1,5 +1,8 @@
 # job4j_fast_foot
 
+[![Build Status](https://app.travis-ci.com/romankhiropulos/job4j_fast_foot.svg?branch=master)](https://app.travis-ci.com/romankhiropulos/job4j_fast_foot)
+
+
 # Структура проекта job4j_fast_foot
 
 ## job4j_fast_foot - многомодульный maven проект, состоящий из модулей:
