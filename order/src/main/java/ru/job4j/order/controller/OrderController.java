@@ -27,7 +27,7 @@ public class OrderController {
     public ResponseEntity<Order> create(@RequestBody Order order) {
         validateOrder(order);
         return new ResponseEntity<Order>(
-                this.orderService.save(order).orElse(null),
+                this.orderService.save(order),
                 HttpStatus.CREATED
         );
     }

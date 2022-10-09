@@ -10,4 +10,6 @@ public class Order {
     private Customer customer;
 
     private String description;
+
+    private OrderStatus orderStatus;
 }

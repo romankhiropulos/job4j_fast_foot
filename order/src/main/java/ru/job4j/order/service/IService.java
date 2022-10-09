@@ -13,5 +13,5 @@ public interface IService<T> {
 
     Collection<T> findAll();
 
-    Optional<T> save(T entity);
+    T save(T entity);
 }
