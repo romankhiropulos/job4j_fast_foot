@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.job4j.domain.model.Card;
 
 @Repository
-public interface CardRepository  extends JpaRepository<Card, Long> {
+public interface CardRepository extends JpaRepository<Card, Long> {
 }
