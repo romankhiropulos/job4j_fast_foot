@@ -2,6 +2,7 @@ package ru.job4j.order.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,14 +20,22 @@ public class OrderController {
 
     private final IOrderService orderService;
 
-    public OrderController(IOrderService orderService) {
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    public OrderController(IOrderService orderService, KafkaTemplate<String, String> kafkaTemplate) {
         this.orderService = orderService;
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    @PostMapping
+    public void sendOrder(String msgId, String msg) {
+        kafkaTemplate.send("msg", msgId, msg);
     }
 
     @PostMapping("/")
     public ResponseEntity<Order> create(@RequestBody Order order) {
         validateOrder(order);
-        
+
         return new ResponseEntity<Order>(
                 this.orderService.save(order),
                 HttpStatus.CREATED
