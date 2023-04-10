@@ -14,8 +14,4 @@ public class OrderStatus {
     private Long id;
 
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
 }

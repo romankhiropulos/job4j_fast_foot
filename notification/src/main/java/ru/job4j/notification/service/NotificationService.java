@@ -10,6 +10,7 @@ import ru.job4j.notification.repository.NotificationRepository;
 import ru.job4j.order.service.OrderService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -33,9 +34,15 @@ public class NotificationService {
         System.out.println(msg.partition());
         System.out.println(msg.key());
         System.out.println(msg.value());
-        notificationRepository.save(Notification.builder()
-                .description(msg.value().getDescription())
-                .order(orderService.findById(msg.key()).orElseThrow())
-                .build());
+        Optional<OrderDto> valueOpt = Optional.of(msg.value());
+        valueOpt.ifPresentOrElse(
+                value -> notificationRepository.save(Notification.builder()
+                                .description(value.getDescription())
+                                .order(orderService.findById(msg.key()).orElseThrow())
+                                .build()),
+                () -> {
+                    throw new NoSuchElementException("Order is null!");
+                }
+        );
     }
 }

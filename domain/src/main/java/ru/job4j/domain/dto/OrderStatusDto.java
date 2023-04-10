@@ -8,6 +8,4 @@ public class OrderStatusDto {
     private Long id;
 
     private String description;
-
-    private Long orderId;
 }

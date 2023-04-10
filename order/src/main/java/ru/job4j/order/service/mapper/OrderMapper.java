@@ -1,7 +1,6 @@
 package ru.job4j.order.service.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import ru.job4j.domain.dto.CustomerDto;
 import ru.job4j.domain.dto.OrderDto;
 import ru.job4j.domain.dto.OrderStatusDto;
@@ -20,8 +19,6 @@ public interface OrderMapper {
 
     Customer toEntity(CustomerDto dto);
 
-    @Mapping(target = "orderId",
-            expression = "java(entity.getOrder() == null ? null : entity.getOrder().getId())")
     OrderStatusDto toDto(OrderStatus entity);
 
     OrderStatus toEntity(OrderStatusDto dto);

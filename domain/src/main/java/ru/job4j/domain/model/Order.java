@@ -20,6 +20,6 @@ public class Order {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "order_status_id")
+    @JoinColumn(name = "order_status_id", referencedColumnName = "id")
     private OrderStatus orderStatus;
 }

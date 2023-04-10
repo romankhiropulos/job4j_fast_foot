@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.dto.OrderDto;
 import ru.job4j.domain.model.Order;
 import ru.job4j.order.service.IOrderService;
+import ru.job4j.order.service.mapper.OrderMapper;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -23,15 +24,19 @@ public class OrderController {
 
     private final IOrderService orderService;
 
+    private final OrderMapper orderMapper;
+
     private final KafkaTemplate<Long, OrderDto> kafkaTemplate;
 
-    public OrderController(IOrderService orderService, KafkaTemplate<Long, OrderDto> kafkaTemplate) {
+    public OrderController(IOrderService orderService, OrderMapper orderMapper, KafkaTemplate<Long, OrderDto> kafkaTemplate) {
         this.orderService = orderService;
+        this.orderMapper = orderMapper;
         this.kafkaTemplate = kafkaTemplate;
     }
 
     @PostMapping("/listener")
     public void sendOrder(@RequestBody OrderDto msg) {
+        Order order = orderService.save(orderMapper.toEntity(msg));
         ListenableFuture<SendResult<Long, OrderDto>> future = kafkaTemplate.send("messengers", msg.getId(), msg);
         future.addCallback(System.out::println, System.err::println);
         kafkaTemplate.flush();

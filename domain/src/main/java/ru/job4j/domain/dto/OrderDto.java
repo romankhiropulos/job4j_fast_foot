@@ -1,9 +1,10 @@
 package ru.job4j.domain.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class OrderDto {
 

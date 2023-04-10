@@ -1,7 +1,7 @@
-DELETE FROM notification;
-DELETE FROM order_status;
-DELETE FROM food_order;
-DELETE FROM customer;
+-- DELETE FROM notification;
+-- DELETE FROM order_status;
+-- DELETE FROM food_order;
+-- DELETE FROM customer;
 
 INSERT INTO customer (name) VALUES ('Jenny'),
                                    ('Tom');

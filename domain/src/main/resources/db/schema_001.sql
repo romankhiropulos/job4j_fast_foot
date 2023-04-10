@@ -1,21 +1,17 @@
-DROP TABLE IF EXISTS notification;
-DROP TABLE IF EXISTS order_status;
-DROP TABLE IF EXISTS food_order;
-DROP TABLE IF EXISTS customer;
 
-CREATE TABLE customer
+CREATE TABLE IF NOT EXISTS customer
 (
     id   BIGSERIAL PRIMARY KEY,
     name VARCHAR(254) NOT NULL
 );
 
-CREATE TABLE order_status
+CREATE TABLE IF NOT EXISTS order_status
 (
     id          BIGSERIAL PRIMARY KEY,
     description VARCHAR
 );
 
-CREATE TABLE food_order
+CREATE TABLE IF NOT EXISTS food_order
 (
     id              BIGSERIAL PRIMARY KEY,
     customer_id     BIGINT REFERENCES customer (id),
@@ -23,7 +19,7 @@ CREATE TABLE food_order
     order_status_id BIGINT     -- REFERENCES order_status (id)
 );
 
-CREATE TABLE notification
+CREATE TABLE IF NOT EXISTS notification
 (
     id          BIGSERIAL PRIMARY KEY,
     description VARCHAR,
