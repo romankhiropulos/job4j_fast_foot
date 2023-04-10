@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.job4j.domain.model.Order;
 import ru.job4j.domain.model.OrderStatus;
 import ru.job4j.order.repository.OrderRepository;
+import ru.job4j.order.service.mapper.OrderMapper;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -12,9 +13,11 @@ import java.util.Optional;
 @Service
 public class OrderService implements IOrderService {
 
+    private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderMapper orderMapper, OrderRepository orderRepository) {
+        this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
     }
 

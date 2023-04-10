@@ -1,10 +1,14 @@
 package ru.job4j.domain.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(schema = "public", name = "notification")
 public class Notification {

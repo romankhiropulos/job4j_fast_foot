@@ -3,9 +3,12 @@ package ru.job4j.order.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.domain.dto.OrderDto;
 import ru.job4j.domain.model.Order;
 import ru.job4j.order.service.IOrderService;
 
@@ -20,16 +23,18 @@ public class OrderController {
 
     private final IOrderService orderService;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<Long, OrderDto> kafkaTemplate;
 
-    public OrderController(IOrderService orderService, KafkaTemplate<String, String> kafkaTemplate) {
+    public OrderController(IOrderService orderService, KafkaTemplate<Long, OrderDto> kafkaTemplate) {
         this.orderService = orderService;
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @PostMapping
-    public void sendOrder(String msgId, String msg) {
-        kafkaTemplate.send("msg", msgId, msg);
+    @PostMapping("/listener")
+    public void sendOrder(@RequestBody OrderDto msg) {
+        ListenableFuture<SendResult<Long, OrderDto>> future = kafkaTemplate.send("messengers", msg.getId(), msg);
+        future.addCallback(System.out::println, System.err::println);
+        kafkaTemplate.flush();
     }
 
     @PostMapping("/")
