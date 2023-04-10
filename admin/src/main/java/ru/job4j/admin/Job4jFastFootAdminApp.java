@@ -26,16 +26,10 @@ public class Job4jFastFootAdminApp {
     public static void restart(Object port) {
         ApplicationArguments args = context.getBean(ApplicationArguments.class);
         String[] sourceArgs1 = args.getSourceArgs();
-//        String portstr = env.getProperty("server.port");
         String[] sourceArgs = new String[]{(String) port};
         Thread thread = new Thread(() -> {
             context.close();
             SpringApplication application = new SpringApplication(Job4jFastFootAdminApp.class);
-//            Set<String> additionalProfiles1 = application.getAdditionalProfiles();
-//            Properties properties = new Properties();
-//            properties.put("server.port", sourceArgs[0]);
-//            application.setDefaultProperties(properties);
-//            Set<String> additionalProfiles2  = application.getAdditionalProfiles();
             System.setProperty("server.port", sourceArgs[0]);
             context = application.run(sourceArgs1);
         });
