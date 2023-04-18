@@ -29,7 +29,7 @@ public class NotificationService {
         return Optional.of(notificationRepository.save(notification));
     }
 
-    @KafkaListener(topics = "messengers")
+    @KafkaListener(id = "KafkaConsumerNotificationConfig", topics = "messengers")
     public void msgListener(ConsumerRecord<Long, OrderDto> msg) {
         System.out.println(msg.partition());
         System.out.println(msg.key());

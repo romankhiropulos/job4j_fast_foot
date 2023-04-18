@@ -1,4 +1,4 @@
-package ru.job4j.notification.config;
+package ru.job4j.order.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.LongDeserializer;
@@ -15,8 +15,8 @@ import ru.job4j.domain.dto.OrderDto;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
-public class KafkaConsumerConfig {
+@Configuration("KafkaConsumerKitchenConfig")
+public class KafkaConsumerKitchenConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String kafkaServer;
@@ -25,7 +25,7 @@ public class KafkaConsumerConfig {
     private String kafkaGroupId;
 
     @Bean
-    public Map<String, Object> consumerConfigs() {
+    public Map<String, Object> consumerKitchenConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
@@ -36,15 +36,15 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<?> kafkaListenerContainerFactory() {
+    public KafkaListenerContainerFactory<?> kafkaListenerContainerKitchenFactory() {
         ConcurrentKafkaListenerContainerFactory<Long, OrderDto> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerKitchenFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<Long, OrderDto> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+    public ConsumerFactory<Long, OrderDto> consumerKitchenFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerKitchenConfigs());
     }
 }

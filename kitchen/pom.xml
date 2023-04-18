@@ -14,4 +14,22 @@
     <artifactId>kitchen</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>ru.job4j</groupId>
+            <artifactId>domain</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.job4j</groupId>
+            <artifactId>order</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.job4j</groupId>
+            <artifactId>notification</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

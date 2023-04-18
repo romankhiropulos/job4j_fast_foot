@@ -1,6 +1,11 @@
 package ru.job4j.order.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+import ru.job4j.domain.dto.OrderDto;
 import ru.job4j.domain.model.Order;
 import ru.job4j.domain.model.OrderStatus;
 import ru.job4j.order.repository.OrderRepository;
@@ -11,15 +16,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService implements IOrderService {
 
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
-
-    public OrderService(OrderMapper orderMapper, OrderRepository orderRepository) {
-        this.orderMapper = orderMapper;
-        this.orderRepository = orderRepository;
-    }
+    private final KafkaTemplate<Long, OrderDto> kafkaTemplate;
 
     @Override
     public OrderStatus checkStatus(Long orderId) {
@@ -48,6 +50,17 @@ public class OrderService implements IOrderService {
 
     @Override
     public Order save(Order entity) {
+        Order savedOrder = orderRepository.save(entity);
+        ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
+                "messengers", orderMapper.toDto(savedOrder)
+        );
+        futureMessengers.addCallback(System.out::println, System.err::println);
+        kafkaTemplate.flush();
+        ListenableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
+                "job4j_orders", orderMapper.toDto(savedOrder)
+        );
+        futureOrder.addCallback(System.out::println, System.err::println);
+        kafkaTemplate.flush();
         return orderRepository.save(entity);
     }
 }

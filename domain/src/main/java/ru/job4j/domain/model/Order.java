@@ -13,6 +13,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "dish_id")
+    private Long dishId;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
