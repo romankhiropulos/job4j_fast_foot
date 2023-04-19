@@ -29,7 +29,7 @@ public class NotificationService {
         return Optional.of(notificationRepository.save(notification));
     }
 
-    @KafkaListener(id = "KafkaConsumerNotificationConfig", topics = "messengers")
+    @KafkaListener(id = "KafkaConsumerNotificationConfig", topics = "messengers", containerFactory = "kafkaListenerContainerNotificationFactory")
     public void msgListener(ConsumerRecord<Long, OrderDto> msg) {
         System.out.println(msg.partition());
         System.out.println(msg.key());
@@ -38,7 +38,7 @@ public class NotificationService {
         valueOpt.ifPresentOrElse(
                 value -> notificationRepository.save(Notification.builder()
                                 .description(value.getDescription())
-                                .order(orderService.findById(msg.key()).orElseThrow())
+                                .order(orderService.findById(value.getId()).orElseThrow())
                                 .build()),
                 () -> {
                     throw new NoSuchElementException("Order is null!");

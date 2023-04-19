@@ -52,13 +52,13 @@ public class OrderService implements IOrderService {
     public Order save(Order entity) {
         Order savedOrder = orderRepository.save(entity);
         OrderDto dto = orderMapper.toDto(savedOrder);
-//        ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
-//                "messengers", dto.getId(), dto
-//        );
-//        futureMessengers.addCallback(System.out::println, System.err::println);
-//        kafkaTemplate.flush();
+        ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
+                "messengers", dto
+        );
+        futureMessengers.addCallback(System.out::println, System.err::println);
+        kafkaTemplate.flush();
         ListenableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
-                "job4j_orders", dto.getId(), dto
+                "job4j_orders", dto
         );
         futureOrder.addCallback(System.out::println, System.err::println);
         kafkaTemplate.flush();
