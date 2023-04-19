@@ -51,16 +51,17 @@ public class OrderService implements IOrderService {
     @Override
     public Order save(Order entity) {
         Order savedOrder = orderRepository.save(entity);
-        ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
-                "messengers", orderMapper.toDto(savedOrder)
-        );
-        futureMessengers.addCallback(System.out::println, System.err::println);
-        kafkaTemplate.flush();
+        OrderDto dto = orderMapper.toDto(savedOrder);
+//        ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
+//                "messengers", dto.getId(), dto
+//        );
+//        futureMessengers.addCallback(System.out::println, System.err::println);
+//        kafkaTemplate.flush();
         ListenableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
-                "job4j_orders", orderMapper.toDto(savedOrder)
+                "job4j_orders", dto.getId(), dto
         );
         futureOrder.addCallback(System.out::println, System.err::println);
         kafkaTemplate.flush();
-        return orderRepository.save(entity);
+        return savedOrder;
     }
 }

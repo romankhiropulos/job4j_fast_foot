@@ -3,7 +3,6 @@ package ru.job4j.order.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,7 +25,7 @@ public class OrderController {
 
     private final OrderMapper orderMapper;
 
-    @PostMapping("/listener")
+    @PostMapping("/save")
     public void sendOrder(@RequestBody OrderDto msg) {
         orderService.save(orderMapper.toEntity(msg));
     }
