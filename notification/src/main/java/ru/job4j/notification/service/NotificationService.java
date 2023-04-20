@@ -29,11 +29,12 @@ public class NotificationService {
         return Optional.of(notificationRepository.save(notification));
     }
 
-    @KafkaListener(id = "KafkaConsumerNotificationConfig", topics = "messengers", containerFactory = "kafkaListenerContainerNotificationFactory")
+    @KafkaListener(
+            id = "KafkaConsumerNotificationConfig",
+            topics = "messengers",
+            containerFactory = "kafkaListenerContainerNotificationFactory"
+    )
     public void msgListener(ConsumerRecord<Long, OrderDto> msg) {
-        System.out.println(msg.partition());
-        System.out.println(msg.key());
-        System.out.println(msg.value());
         Optional<OrderDto> valueOpt = Optional.of(msg.value());
         valueOpt.ifPresentOrElse(
                 value -> notificationRepository.save(Notification.builder()

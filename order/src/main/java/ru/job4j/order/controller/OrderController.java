@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
@@ -33,7 +34,6 @@ public class OrderController {
     @PostMapping("/")
     public ResponseEntity<Order> create(@RequestBody Order order) {
         validateOrder(order);
-
         return new ResponseEntity<Order>(
                 this.orderService.save(order),
                 HttpStatus.CREATED
@@ -48,13 +48,19 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> modify(@PathVariable long id, @RequestBody Map<Object, Object> orderFields) {
-        Order entityToPatch = orderService.findById(id).orElseThrow(
-                () -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Orders is not found. Please, check request."
-                )
-        );
+    public ResponseEntity<Void> modify(
+            @PathVariable long id,
+            @RequestBody Map<Object, Object> orderFields
+    ) {
+        Optional<Order> orderOptional = orderService.findById(id);
+        Order entityToPatch;
+        if (orderOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Orders is not found. Please, check request."
+            );
+        }
+        entityToPatch = orderOptional.get();
         patch(entityToPatch, orderFields);
         validateOrder(entityToPatch);
         this.orderService.save(entityToPatch);
@@ -80,9 +86,15 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Order> findById(@PathVariable long id) {
-        var order = this.orderService.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Order is not found. Please, check request."
-        ));
+        Optional<Order> orderOptional = orderService.findById(id);
+        Order order;
+        if (orderOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Orders is not found. Please, check request."
+            );
+        }
+        order = orderOptional.get();
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
@@ -103,10 +115,14 @@ public class OrderController {
                 field.setAccessible(true);
                 switch (field.getType().getTypeName()) {
                     case ("int"):
-                        ReflectionUtils.setField(field, entityToPatch, Integer.valueOf((String) entry.getValue()));
+                        ReflectionUtils.setField(
+                                field, entityToPatch, Integer.valueOf((String) entry.getValue())
+                        );
                         break;
                     case ("long"):
-                        ReflectionUtils.setField(field, entityToPatch, Long.valueOf((String) entry.getValue()));
+                        ReflectionUtils.setField(
+                                field, entityToPatch, Long.valueOf((String) entry.getValue())
+                        );
                         break;
                     default:
                         Class<?> theClass = null;

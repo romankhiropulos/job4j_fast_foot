@@ -10,7 +10,11 @@ import ru.job4j.domain.dto.OrderDto;
 @Slf4j
 public class KitchenService {
 
-    @KafkaListener(id = "KafkaConsumerKitchenConfig", topics = "job4j_orders", containerFactory = "kafkaListenerContainerKitchenFactory")
+    @KafkaListener(
+            id = "KafkaConsumerKitchenConfig",
+            topics = "job4j_orders",
+            containerFactory = "kafkaListenerContainerKitchenFactory"
+    )
     public void receiveOrder(ConsumerRecord<Long, OrderDto> msg) {
         OrderDto value = msg.value();
         log.debug(value.toString());

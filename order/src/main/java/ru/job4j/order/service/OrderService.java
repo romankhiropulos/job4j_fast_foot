@@ -1,6 +1,7 @@
 package ru.job4j.order.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService implements IOrderService {
 
     private final OrderMapper orderMapper;
@@ -55,12 +57,16 @@ public class OrderService implements IOrderService {
         ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
                 "messengers", dto
         );
-        futureMessengers.addCallback(System.out::println, System.err::println);
+        futureMessengers.addCallback(
+                x -> log.debug(String.valueOf(x)), x -> log.error(String.valueOf(x), x)
+        );
         kafkaTemplate.flush();
         ListenableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
                 "job4j_orders", dto
         );
-        futureOrder.addCallback(System.out::println, System.err::println);
+        futureOrder.addCallback(
+                x -> log.debug(String.valueOf(x)), x -> log.error(String.valueOf(x), x)
+        );
         kafkaTemplate.flush();
         return savedOrder;
     }

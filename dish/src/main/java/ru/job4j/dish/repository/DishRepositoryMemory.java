@@ -27,10 +27,47 @@ public class DishRepositoryMemory {
          Type tomato = Type.builder().category(vegetable).name("Помидор").build();
          Type potato = Type.builder().category(vegetable).name("Картофель").build();
 
-         dishes.put(1L, Dish.builder().id(1L).category(meat).type(steak).name("Стейк говядины").cost(199f).cost(199f).build());
-         dishes.put(2L, Dish.builder().id(2L).category(fruit).type(apple).name("Апорт Алма-Атинский").cost(349f).build());
-         dishes.put(3L, Dish.builder().id(3L).category(vegetable).type(tomato).name("Томат \"Бычье сердце\"").cost(5969f).build());
-         dishes.put(4L, Dish.builder().id(4L).category(vegetable).type(potato).name("Картофель мытый").cost(466f).build());
+         dishes.put(
+                 1L,
+                 Dish.builder()
+                         .id(1L)
+                         .category(meat)
+                         .type(steak)
+                         .name("Стейк говядины")
+                         .cost(199f)
+                         .cost(199f)
+                         .build()
+         );
+         dishes.put(
+                 2L,
+                 Dish.builder()
+                         .id(2L)
+                         .category(fruit)
+                         .type(apple)
+                         .name("Апорт Алма-Атинский")
+                         .cost(349f)
+                         .build()
+         );
+         dishes.put(
+                 3L,
+                 Dish.builder()
+                         .id(3L)
+                         .category(vegetable)
+                         .type(tomato)
+                         .name("Томат \"Бычье сердце\"")
+                         .cost(5969f)
+                         .build()
+         );
+         dishes.put(
+                 4L,
+                 Dish.builder()
+                         .id(4L)
+                         .category(vegetable)
+                         .type(potato)
+                         .name("Картофель мытый")
+                         .cost(466f)
+                         .build()
+         );
      }
 
      public Collection<Dish> findAll() {
@@ -62,6 +99,8 @@ public class DishRepositoryMemory {
     }
 
     public Collection<Dish> findAllByTypeAndCost(Type type, Float cost) {
-         return dishes.values().stream().filter(d -> type.equals(d.getType()) && cost.equals(d.getCost())).toList();
+         return dishes.values().stream()
+                               .filter(d -> type.equals(d.getType()) && cost.equals(d.getCost()))
+                               .toList();
     }
 }
