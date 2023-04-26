@@ -1,6 +1,7 @@
 package ru.job4j.notification.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class NotificationService {
 
@@ -36,6 +38,7 @@ public class NotificationService {
     )
     public void msgListener(ConsumerRecord<Long, OrderDto> msg) {
         Optional<OrderDto> valueOpt = Optional.of(msg.value());
+        log.debug("message from notification service: " + valueOpt.get());
         valueOpt.ifPresentOrElse(
                 value -> notificationRepository.save(Notification.builder()
                                 .description(value.getDescription())
