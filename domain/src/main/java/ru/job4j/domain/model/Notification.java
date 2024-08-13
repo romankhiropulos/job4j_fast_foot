@@ -2,7 +2,7 @@ package ru.job4j.domain.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Setter
 @Getter

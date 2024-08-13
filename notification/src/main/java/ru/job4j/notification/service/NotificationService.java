@@ -37,6 +37,7 @@ public class NotificationService {
             containerFactory = "kafkaListenerContainerNotificationFactory"
     )
     public void msgListener(ConsumerRecord<Long, OrderDto> msg) {
+        log.debug("The listener in the NOTIFICATION got to work...");
         Optional<OrderDto> valueOpt = Optional.of(msg.value());
         log.debug("message from notification service: " + valueOpt.get());
         valueOpt.ifPresentOrElse(
@@ -48,5 +49,6 @@ public class NotificationService {
                     throw new NoSuchElementException("Order is null!");
                 }
         );
+        log.debug("The listener in the NOTIFICATION has finished work!");
     }
 }

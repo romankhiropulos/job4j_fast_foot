@@ -1,8 +1,7 @@
 package ru.job4j.domain.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-
-import javax.persistence.*;
 
 @Data
 @Entity

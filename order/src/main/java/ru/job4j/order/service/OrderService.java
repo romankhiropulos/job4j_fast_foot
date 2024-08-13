@@ -7,7 +7,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 import ru.job4j.domain.dto.OrderDto;
 import ru.job4j.domain.model.Order;
 import ru.job4j.domain.model.OrderStatus;
@@ -17,6 +16,7 @@ import ru.job4j.order.service.mapper.OrderMapper;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -42,21 +42,10 @@ public class OrderService implements IOrderService {
         entity.setOrderStatus(orderStatusOptional.get());
         Order savedOrder = orderRepository.save(entity);
         OrderDto dto = orderMapper.toDto(savedOrder);
-        ListenableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
-                PREORDER_QUEUE, dto
-        );
-        futureOrder.addCallback(
-                x -> log.debug(String.valueOf(x)), x -> log.error(String.valueOf(x), x)
-        );
-        kafkaTemplate.flush();
 
-        ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
-                MESSENGERS_QUEUE, dto
-        );
-        futureMessengers.addCallback(
-                x -> log.debug(String.valueOf(x)), x -> log.error(String.valueOf(x), x)
-        );
-        kafkaTemplate.flush();
+        sendToKafka(dto, PREORDER_QUEUE);
+        sendToKafka(dto, MESSENGERS_QUEUE);
+
         return savedOrder;
     }
 
@@ -66,14 +55,11 @@ public class OrderService implements IOrderService {
             containerFactory = "kafkaListenerContainerOrderFactory"
     )
     public void receiveCookedOrder(ConsumerRecord<Long, OrderDto> msg) {
-        OrderDto value = msg.value();
-        ListenableFuture<SendResult<Long, OrderDto>> futureMessengers = kafkaTemplate.send(
-                MESSENGERS_QUEUE, value
-        );
-        futureMessengers.addCallback(
-                x -> log.debug(String.valueOf(x)), x -> log.error(String.valueOf(x), x)
-        );
+        log.debug("The listener in the ORDER got to work...");
+        OrderDto dto = msg.value();
+        sendToKafka(dto, MESSENGERS_QUEUE);
         kafkaTemplate.flush();
+        log.debug("The listener in the ORDER has finished work!");
     }
 
     @Override
@@ -99,5 +85,19 @@ public class OrderService implements IOrderService {
     @Override
     public Collection<Order> findAll() {
         return orderRepository.findAll();
+    }
+
+    private void sendToKafka(OrderDto dto, String topicName) {
+        CompletableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
+                topicName, dto
+        );
+        futureOrder.whenComplete((x, throwable) -> {
+            if (throwable != null) {
+                log.error("Произошла ошибка: " + throwable.getMessage());
+            } else {
+                log.debug("Результат: " + x);
+            }
+        });
+        kafkaTemplate.flush();
     }
 }

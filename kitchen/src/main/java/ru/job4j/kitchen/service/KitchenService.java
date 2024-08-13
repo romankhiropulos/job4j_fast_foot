@@ -7,7 +7,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 import ru.job4j.domain.dto.OrderDto;
 import ru.job4j.domain.model.KitchenJob;
 import ru.job4j.domain.model.OrderStatus;
@@ -18,6 +17,7 @@ import ru.job4j.order.service.mapper.OrderMapper;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -43,6 +43,7 @@ public class KitchenService {
             containerFactory = "kafkaListenerContainerKitchenFactory"
     )
     public void receiveOrder(ConsumerRecord<Long, OrderDto> msg) {
+        log.debug("The listener in the KITCHEN got to work...");
         OrderDto value = msg.value();
         Optional<OrderStatus> orderStatusOpt;
         log.debug("Order from topic \"preorder\": ".concat(value.toString()));
@@ -55,16 +56,21 @@ public class KitchenService {
                     .order(orderMapper.toEntity(value))
                     .build());
             log.debug(kitchenJob.toString());
-            ListenableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
+            CompletableFuture<SendResult<Long, OrderDto>> futureOrder = kafkaTemplate.send(
                     COOKED_ORDER_QUEUE, value
             );
-            futureOrder.addCallback(
-                    x -> log.debug(String.valueOf(x)), x -> log.error(String.valueOf(x), x)
-            );
+            futureOrder.whenComplete((x, throwable) -> {
+                if (throwable != null) {
+                    log.error("Произошла ошибка: " + throwable.getMessage());
+                } else {
+                    log.debug("Результат: " + x);
+                }
+            });
             kafkaTemplate.flush();
         } else {
             throw new NoSuchElementException("Can't find status order");
         }
+        log.debug("The listener in the KITCHEN has finished work!");
     }
 
     private static Boolean isPossibleToPrepareOrder() {
