@@ -7,7 +7,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 
 @EnableKafka
 @SpringBootApplication(scanBasePackages = {
-        "ru.job4j.domain", "ru.job4j.order", "ru.job4j.notification"
+        "ru.job4j.domain", "ru.job4j.order", "ru.job4j.payment"
 })
 @EntityScan(basePackages = {"ru.job4j.domain"})
 public class Job4jFastFootKitchenApp {

@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "dishId": 3,
+  "customer": {
+    "id": 2,
+    "name": "John"
+  },
+  "description": "Some description",
+  "orderStatus": {
+    "id": 3,
+    "description": "In progress",
+    "orderId": 1
+  }
+}
