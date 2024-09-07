@@ -6,7 +6,7 @@ import ru.job4j.payment.entity.Account;
 
 import java.util.List;
 
-@Repository("cassandraCountryRepository")
+@Repository("accountRepository")
 public interface AccountMongoRepository extends MongoRepository<Account, String> {
 
     List<Account> findAll();

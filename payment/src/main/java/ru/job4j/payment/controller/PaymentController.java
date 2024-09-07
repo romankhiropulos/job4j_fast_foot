@@ -1,8 +1,6 @@
 package ru.job4j.payment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,9 +11,7 @@ import ru.job4j.domain.dto.AccountDto;
 import ru.job4j.payment.entity.Account;
 import ru.job4j.payment.service.PaymentService;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -67,21 +63,6 @@ public class PaymentController {
     public ResponseEntity<?> processCountries() {
         paymentService.processAccounts();
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler(value = {
-            IllegalArgumentException.class,
-            NullPointerException.class
-    })
-    public void exceptionHandler(Exception e,
-                                 HttpServletRequest request,
-                                 HttpServletResponse response) throws IOException {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(
-                Map.of("message", e.getMessage(), "type", e.getClass()))
-        );
-        log.error(e.getLocalizedMessage());
     }
 
     private void validatePerson(Account account) throws NullPointerException {

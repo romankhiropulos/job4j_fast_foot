@@ -1,21 +1,22 @@
 package ru.job4j.payment.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Document("country")
 public class Country {
 
     @Id
-    String id;
+    private String id;
 
-    String name;
+    private String name;
+
+    public Country(String name) {
+        this.name = name;
+    }
 }

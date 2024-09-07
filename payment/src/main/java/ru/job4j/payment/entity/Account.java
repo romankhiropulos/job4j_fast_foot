@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -15,15 +16,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Account {
 
     @Id
-    String id;
-    String lastName;
-    String firstName;
-    String patronymic;
-    String country;
-    String region;
-    String subregion;
-    Integer age;
-    Double money;
+    private String id;
+    private String lastName;
+    private String firstName;
+    private String patronymic;
+    private String region;
+    private String subregion;
+    private Integer age;
+    private Double money;
+
+    @DBRef
+    private Country country;
 }
 
 

@@ -15,9 +15,9 @@ public class AccountDto {
     String lastName;
     String firstName;
     String patronymic;
-    String country;
     String region;
     String subregion;
     Integer age;
     Double money;
+    CountryDto country;
 }
