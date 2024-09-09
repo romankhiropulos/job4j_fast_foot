@@ -44,13 +44,33 @@ public class PaymentController {
         return new ResponseEntity<>(objectMapper.convertValue(account, AccountDto.class), HttpStatus.OK);
     }
 
-    @PostMapping("account/save")
+    @PostMapping("account")
     public ResponseEntity<AccountDto> saveAccount(@RequestBody AccountDto accountDto) {
         validatePerson(objectMapper.convertValue(accountDto, Account.class));
         Account account = paymentService.save(objectMapper.convertValue(accountDto, Account.class));
         return new ResponseEntity<>(
                 objectMapper.convertValue(account, AccountDto.class),
                 HttpStatus.CREATED
+        );
+    }
+
+    @PatchMapping("account")
+    public ResponseEntity<AccountDto> patchAccount(@RequestBody AccountDto accountDto) {
+        validatePerson(objectMapper.convertValue(accountDto, Account.class));
+        Account account = paymentService.save(objectMapper.convertValue(accountDto, Account.class));
+        return new ResponseEntity<>(
+                objectMapper.convertValue(account, AccountDto.class),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("account")
+    public ResponseEntity<AccountDto> updateAccount(@RequestBody AccountDto accountDto) {
+        validatePerson(objectMapper.convertValue(accountDto, Account.class));
+        Account account = paymentService.save(objectMapper.convertValue(accountDto, Account.class));
+        return new ResponseEntity<>(
+                objectMapper.convertValue(account, AccountDto.class),
+                HttpStatus.OK
         );
     }
 
